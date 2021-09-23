@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HP Roller", "HP Roller\HP Roller.csproj", "{EBB57473-A6F9-4F2A-BA61-1BCD172BDC70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EBB57473-A6F9-4F2A-BA61-1BCD172BDC70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBB57473-A6F9-4F2A-BA61-1BCD172BDC70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBB57473-A6F9-4F2A-BA61-1BCD172BDC70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBB57473-A6F9-4F2A-BA61-1BCD172BDC70}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45F9A798-D3D1-4C2F-BD4B-38C4E75BDE2C}
+	EndGlobalSection
+EndGlobal
