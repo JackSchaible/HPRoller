@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>HP_Roller</RootNamespace>
+    <LangVersion>9</LangVersion>
+	<PackAsTool>true</PackAsTool>
+	<Nullable>enable</Nullable>
+	  <PackageReleaseNotes>Converted into Command-Line utility</PackageReleaseNotes>
+	<AssemblyVersion>1.1.0.0</AssemblyVersion>
+	<FileVersion>1.1.0.0</FileVersion>
+	<Copyright>2022 Jack Schaible</Copyright>
+	<Description>An HP roller for 5e D&amp;D monsters</Description>
+	<PackageId>hpr</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+
+</Project>

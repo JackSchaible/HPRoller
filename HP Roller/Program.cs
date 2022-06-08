@@ -1,104 +1,110 @@
 ﻿using System;
+using System.CommandLine;
+using System.CommandLine.NamingConventionBinder;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace HP_Roller
 {
-    class Program
+    internal class Program
     {
-        private static readonly Regex HitDiceRegex = new Regex(@"([0-9]+)d([0-9]+)(\s(?:\+|\-)\s([0-9]+))?");
-        private static readonly Random Random = new Random();
-        private static string[] Columns = new[]
-        {
+        private static readonly Regex HitDiceRegex = new(@"([0-9]+)d([0-9]+)((?:\+|\-)([0-9]+))?");
+        private static readonly Random Random = new();
+        private static readonly string[] Columns = {
             "Monster #",
-            "HP Rolled",
+            "Hp Rolled",
             "Initiative"
         };
 
-        static void Main()
+        private static int Main(string[] args)
         {
-            ConsoleKey key = ConsoleKey.A;
-
-            while (key != ConsoleKey.Q)
+            var numMonstersArg = new Argument<int>(
+                "num-monsters", "Number of monsters to roll for");
+            numMonstersArg.AddValidator(result =>
             {
-                Console.Clear();
-
-                Console.WriteLine("Enter number of monsters to roll for (default 1)");
-                string input = Console.ReadLine()?.Trim() ?? "";
-                if (!int.TryParse(input, out var monsters))
+                if (result.GetValueForArgument(numMonstersArg) < 1)
                 {
-                    monsters = 1;
+                    result.ErrorMessage = "Must be greater than 0";
                 }
+            });
+            numMonstersArg.SetDefaultValue(1);
 
-                Console.WriteLine("Enter Dexterity modifier");
-                input = Console.ReadLine()?.Trim() ?? "";
-                int dexMod, hp;
+            var dexModArg = new Argument<int>(
+                "dex-mod", "The dexterity modifier of the monsters to roll for");
 
-                if (!int.TryParse(input, out dexMod))
+            var hpArg = new Argument<string>(
+                "hp", "The Hp dice of the monsters to roll");
+            hpArg.AddValidator(result =>
+            {
+                Match match = HitDiceRegex.Match(result.GetValueForArgument(hpArg));
+                if (!match.Success)
                 {
-                    dexMod = 0;
+                    result.ErrorMessage = "HP Dice isn't valid. It must be in the format {n}d{n}[+/-]{n}, so '1d8+4', for example.";
                 }
+            });
+            
+            var cmd = new RootCommand
+            {
+                numMonstersArg,
+                dexModArg,
+                hpArg,
+            };
+            cmd.Description = "A command-line utility to roll HP for 5e D&D monsters!";
+            cmd.Handler = CommandHandler.Create<int, int, string, IConsole>(HandleRoot);
 
-                Match match;
-                do
+            return cmd.Invoke(args);
+        }
+
+        private static void HandleRoot(int numMonsters, int dexMod, string hp, IConsole console)
+        {
+
+            // Validation is done already so we can assume the regex is valid
+            Match match = HitDiceRegex.Match(hp);
+            int diceCount = int.Parse(match.Groups[1].Value),
+                hitDice = int.Parse(match.Groups[2].Value),
+                hpNo = int.Parse(match.Groups[3].Value);
+            
+            ProcessInput(numMonsters, dexMod, diceCount, hitDice, hpNo, console);
+        }
+
+        private static void ProcessInput(int numMonsters, int dexMod, int diceCount,
+            int hitDice, int hp, IConsole console)
+        {
+            PrintTableHeading(console);
+
+            for (int i = 0; i < numMonsters; i++)
+            {
+                int rolledHp = hp, initiative = dexMod;
+
+                for (int j = 0; j < diceCount; j++)
                 {
-                    Console.WriteLine("Enter HP to roll");
-                    input = Console.ReadLine()?.Trim() ?? "";
-
-                    match = HitDiceRegex.Match(input);
-                    if (match.Success)
-                    {
-                        Console.Clear();
-                        var diceCount = int.Parse(match.Groups[1].Value);
-                        var hitDice = int.Parse(match.Groups[2].Value);
-                        int.TryParse(match.Groups[3].Value, out hp);
-
-                        PrintTableHeading();
-
-                        for (int i = 0; i < monsters; i++)
-                        {
-                            int rolledHp = hp, initiative = dexMod;
-
-                            for (int j = 0; j < diceCount; j++)
-                            {
-                                if (j == 0)
-                                    rolledHp += hitDice;
-                                else
-                                    rolledHp += Random.Next(2, hitDice + 1);
-                            }
-
-                            initiative += Random.Next(1, 20 + 1);
-
-                            PrintTableRow(i + 1, rolledHp, initiative);
-                        }
-                    }
+                    if (j == 0)
+                        rolledHp += hitDice;
                     else
-                    {
-                        Console.WriteLine(
-                            "HP Not Understood. Please write in format of [number]d[Hit Dice][+/-][Constitution Modifier]");
-                    }
-                } while (!match.Success);
+                        rolledHp += Random.Next(2, hitDice + 1);
+                }
 
-                Console.WriteLine("\r\nPress q to quit or any other character.");
-                key = Console.ReadKey().Key;
+                initiative += Random.Next(1, 20 + 1);
+
+                PrintTableRow(console, i + 1, rolledHp, initiative);
             }
         }
 
-        private static void PrintTableHeading()
+        private static void PrintTableHeading(IConsole console)
         {
-            Console.WriteLine(string.Join(" | ", Columns));
-            PrintDivider(2);
+            console.WriteLine(string.Join(" | ", Columns));
+            PrintDivider(console, 2);
         }
 
-        private static void PrintDivider(int times = 1)
+        private static void PrintDivider(IConsole console, int times = 1)
         {
             int dashes = Columns.Select(s => s.Length).Sum() + (Columns.Length - 1) * 3;
 
-            for(int i = 0; i < times; i++)
-                Console.WriteLine(new string('-', dashes));
+            for (int i = 0; i < times; i++)
+                console.WriteLine(new string('-', dashes));
         }
 
-        private static void PrintTableRow(int monsterNumber, int hp, int initiative)
+        private static void PrintTableRow(IConsole console, int monsterNumber, int hp, int initiative)
         {
             string hpLine = PrintInCenter(Columns[0].Length + 1, monsterNumber.ToString());
             hpLine += "|";
@@ -106,8 +112,8 @@ namespace HP_Roller
             hpLine += "|";
             hpLine += PrintInCenter(Columns[2].Length + 3, initiative.ToString());
 
-            Console.WriteLine(hpLine);
-            PrintDivider();
+            console.WriteLine(hpLine);
+            PrintDivider(console);
         }
 
         private static string PrintInCenter(int spaces, string text)
