@@ -67,11 +67,15 @@ async function run() {
       let hp = 0;
       for (let j = 0; j < numDice; j++) {
         let roll = 0;
-        while (roll < 1) {
+        while (roll <= 1) {
           roll = Math.floor(Math.random() * diceSize) + 1;
         }
-        hp += roll + modifier;
+
+        hp += roll;
+        console.log("Total HP: " + hp);
       }
+
+      hp += modifier;
 
       const initiative = Math.floor(Math.random() * 20) + 1 + initMod;
 
