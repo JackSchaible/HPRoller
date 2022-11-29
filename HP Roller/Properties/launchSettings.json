@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "HP Roller": {
-      "commandName": "Project",
-      "commandLineArgs": "2 4 3d4+3"
-    }
-  }
-}

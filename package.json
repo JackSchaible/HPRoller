@@ -1,0 +1,44 @@
+{
+  "name": "hproller",
+  "version": "1.0.0",
+  "description": "A D&D 5e Hitpoint Roller",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node-esm ./src/index.ts",
+    "lint": "eslint . --ext .ts",
+    "rebuild": "rm -rf node_modules && npm i"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JackSchaible/HPRoller.git"
+  },
+  "author": "Jack Schaible",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JackSchaible/HPRoller/issues"
+  },
+  "homepage": "https://github.com/JackSchaible/HPRoller#readme",
+  "devDependencies": {
+    "@types/inquirer": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "inquirer": "^8.0.0",
+    "ts-node": "^10.9.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ]
+  }
+}
