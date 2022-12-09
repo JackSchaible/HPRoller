@@ -64,8 +64,8 @@ async function run() {
 
     const results: result[] = [];
     for (let i = 0; i < numMonsters; i++) {
-      let hp = 0;
-      for (let j = 0; j < numDice; j++) {
+      let hp = diceSize;
+      for (let j = 0; j < numDice - 1; j++) {
         let roll = 0;
         while (roll <= 1) {
           roll = Math.floor(Math.random() * diceSize) + 1;
